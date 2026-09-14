@@ -1,0 +1,60 @@
+name: R checks and synthetic workflows
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '**.R'
+      - 'app/**'
+      - 'examples/**'
+      - 'templates/**'
+      - '.github/workflows/checks.yml'
+  pull_request:
+    paths:
+      - '**.R'
+      - 'app/**'
+      - 'examples/**'
+      - 'templates/**'
+      - '.github/workflows/checks.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: clinic-checks-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@465b7d8e732ca3921382b1674c59bada9cbf3399 # v2
+        with:
+          r-version: 'release'
+          use-public-rspm: true
+      - name: Check core decision rules with base R
+        run: Rscript --vanilla tests/run_tests.R
+      - name: Install reporting and interface test dependencies
+        shell: Rscript {0}
+        run: |
+          packages <- c("dplyr", "purrr", "stringr", "lubridate", "openxlsx",
+                        "tidyr", "tibble", "zip", "shiny", "testthat")
+          install.packages(packages)
+          missing <- packages[!vapply(packages, requireNamespace, logical(1), quietly = TRUE)]
+          if (length(missing)) stop("Missing dependencies: ", paste(missing, collapse = ", "))
+          print(vapply(packages, function(package) as.character(packageVersion(package)), character(1)))
+          sessionInfo()
+      - name: Check interface adapters and session state
+        run: Rscript --vanilla tests/test_interface.R
+      - name: Check Basic and Full Excel workflows and interface parity
+        run: Rscript --vanilla tests/smoke_workflows.R

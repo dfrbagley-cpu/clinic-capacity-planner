@@ -41,6 +41,15 @@ comparison workbook in a temporary directory. It is a slower integration check:
 Rscript tests/smoke_workflows.R
 ```
 
+GitHub Actions runs these three scripts on Linux and Windows for changes to R
+code, interface files, fictional inputs or the workflow. The core checks run
+before packages are installed; the interface and Excel checks then use the
+current R release and log their package versions. Runs need only read access,
+use fictional inputs, and cancel superseded runs on the same branch.
+These checks cover unprotected Excel files and Shiny server behavior. They do not
+replace the browser, protected-workbook or hospital shared-drive acceptance
+checks in [ACCEPTANCE.md](ACCEPTANCE.md).
+
 Development was checked with R 4.3.3, openxlsx 4.2.5.2 and Shiny 1.8.0. The scripts do not
 install packages during ordinary report or interface execution. Hospital
 deployments should retain their approved, tested dependency versions.
