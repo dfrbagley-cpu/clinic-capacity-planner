@@ -14,7 +14,8 @@ blocked <- grepl("(^|/)(\\.env($|\\.)|\\.Rhistory$|\\.RData$)|\\.[rR][dD][sS]$",
 if (any(blocked)) stop("Private runtime files are tracked; inspect before packaging.")
 hospital <- c("LICENSE", "config.R", "run_report.R", "Run-Basic.cmd", "Run-Full.cmd", "Clinic-Capacity-Planner.Rproj",
   "R/decision_support.R", "R/workbook_support.R", "R/report_pipeline.R", "START-HOSPITAL.md",
-  "docs/HOSPITAL_SETUP.md", "docs/FULL_INPUTS.md", "docs/ACCEPTANCE.md", "input_data/.gitkeep", "output/.gitkeep")
+  "docs/HOSPITAL_SETUP.md", "docs/FULL_INPUTS.md", "docs/ACCEPTANCE.md",
+  "docs/ENVIRONMENT.md", "scripts/capture_environment.R", "input_data/.gitkeep", "output/.gitkeep")
 if (length(setdiff(hospital, tracked))) stop("Hospital release files must be tracked in Git.")
 stage <- tempfile("cc_releases_"); dir.create(stage)
 package <- function(files, directory_name, archive_name) {
