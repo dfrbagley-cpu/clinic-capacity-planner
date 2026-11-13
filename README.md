@@ -43,7 +43,7 @@ dependencies. See [the original-schema fictional workbook](examples/synthetic_in
 
 | Delivery version | How to use it | Requirements |
 |---|---|---|
-| **Hospital R Tool** | Copy the release folder to the shared drive, set `config.R`, run `Run-Basic.cmd` or `Run-Full.cmd`, open the Excel report | R and the reporting packages; no Shiny or hosting |
+| **Hospital R Tool** | Copy the source folder to an approved shared drive, set `config.R`, run `Run-Basic.cmd` or `Run-Full.cmd`, open the Excel report | R and the reporting packages; no Shiny or hosting |
 | **Interface Version** | Run `Run-Interface.cmd` or `source("run_app.R")`; load exports, select a clinic, edit hours and download results | The same R packages plus `shiny`; a local browser |
 
 The source for both versions is maintained together in the public
@@ -69,9 +69,29 @@ See [interface setup](docs/INTERFACE_SETUP.md).
 Basic never requires Full inputs. Missing or invalid Full inputs are reported;
 the existing activity and Basic recommendations remain available.
 
+## Get the development preview
+
+There is not yet a packaged GitHub release. To try the current source without Git,
+open this repository's **Code** menu, choose **Download ZIP**, and extract the
+archive before running anything. Open the extracted `clinic-capacity-planner-main`
+folder, not the ZIP itself. Alternatively, clone the repository.
+
+Start with fictional data and follow [the setup guide](docs/HOSPITAL_SETUP.md)
+for R and package requirements. From the extracted project folder, run
+`Rscript examples/run_demo.R` to generate the synthetic report. The
+[Interface Version](docs/INTERFACE_SETUP.md) offers a **Load fictional example**
+button after its additional setup.
+
+The source on `main` can change. Record the commit used for an evaluation; the
+[development guide](docs/DEVELOPMENT.md) explains how to build local packages.
+These packages are not evidence of hospital approval or workstation acceptance.
+
 ## Start the Hospital R Tool
 
-1. Put the project folder on the hospital shared drive.
+Before using real exports, obtain local software/data-handling approval and
+complete the [workstation and workflow acceptance checks](docs/ACCEPTANCE.md).
+
+1. Put the extracted project folder on an approved hospital shared drive.
 2. Have IT install R and the packages in [the hospital setup guide](docs/HOSPITAL_SETUP.md).
 3. Put the existing monthly Excel exports in `input_data`.
 4. Set the analysis end date and export options in `config.R`.
