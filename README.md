@@ -18,6 +18,21 @@ inspectable. All included patient records are fictional.
 · [verification and remaining acceptance work](docs/ACCEPTANCE.md)
 · [license](LICENSE).
 
+## Try the Excel report without installing R
+
+[Download the interactive fictional example (.xlsx)](https://github.com/dfrbagley-cpu/clinic-capacity-planner/raw/refs/heads/main/examples/reports/clinic-capacity-fictional-demo.xlsx).
+
+Open it in Excel, start on **Compare Hours**, select a clinic in the yellow
+**Clinic** cell and change the yellow **Start/End** times. Visit counts, rates and
+comparisons recalculate using the fictional records. No macros or R installation
+are needed to explore this saved example. GitHub's file preview is not interactive.
+
+For a quick check, choose Meridian Clinic: 08:00–16:00 captures **112** completed
+visits; 09:00–17:00 captures **144**. Try Cedar Clinic and compare the result.
+Custom hours update visit counts, not distinct-patient counts; use the R/Shiny
+interface to recalculate those. This is historical activity capture, not a
+forecast or a validated deployment. [Example details and limits](examples/reports/README.md).
+
 ## A concrete example
 
 The supplied fictional dataset covers two clinics. These are completed visits
