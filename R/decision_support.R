@@ -108,7 +108,9 @@ cc_evidence <- function(d, config) {
 }
 
 cc_schedule_analysis <- function(d, config) {
-  current <- d[d$period == "Current", , drop = FALSE]
+  # Missing clinic keys remain in the exclusion audit, but cannot define a
+  # schedule scope. Avoid NA logical subscripts creating phantom rows here.
+  current <- d[d$period == "Current" & !is.na(d$clinic_key), , drop = FALSE]
   clinics <- unique(current[, c("clinic_key", "clinic_name"), drop = FALSE])
   result <- minute_rows <- scopes <- list()
   for (i in seq_len(nrow(clinics))) {
