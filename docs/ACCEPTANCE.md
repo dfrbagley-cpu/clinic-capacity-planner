@@ -74,3 +74,38 @@ https://www.ihi.org/library/model-for-improvement/establishing-measures
 
 Neither source validates this tool's local screening thresholds or establishes
 Ontario reporting requirements. Thresholds are configurable development defaults.
+
+## Protected Excel acceptance on Windows (synthetic data only)
+
+The automated smoke workflow uses unprotected workbooks. It does not test
+`excel.link`, desktop Excel automation, password prompts or hospital permissions.
+Run this separate check on the intended Windows workstation before local use:
+
+1. Copy `examples/synthetic_input/visits.xlsx` into a new approved test folder.
+   Never use patient exports for this check. Preserve the original fixture.
+2. In desktop Excel, use **File > Info > Protect Workbook > Encrypt with Password**
+   on the copy. Set a temporary test password, save and close Excel. Sheet
+   protection is not file encryption. Keep the password out of scripts and logs.
+3. From the project checkout, first run an unprotected baseline:
+   `Rscript run_report.R --unprotected --input examples/synthetic_input --output output/acceptance-baseline --as-of 2026-08-30`.
+   Run Basic with `protected = TRUE` against the encrypted-copy folder, the same
+   analysis date and a different output folder. Supply the password only through
+   the masked prompt. Do not add `--unprotected` to this second run.
+4. Compare the resulting Schedule Comparison, Current Activity and Decision
+   Evidence sheets against the baseline. Counts and exclusions must match;
+   generated timestamps/output paths need not. Meridian's three saved windows
+   have 112, 160 and 144 completed visits in this fixture.
+5. Try an incorrect password and cancel the prompt. Each must fail clearly,
+   without a usable success report or a printed password. Then retry with the
+   correct password to verify recovery. Confirm source files are unchanged and
+   no Excel workbook remains locked after success or failure.
+6. Repeat the successful run from the approved shared-drive location; run twice
+   concurrently and verify separate output folders. Repeat in Full mode with
+   `examples/synthetic_planning_inputs.xlsx` and compare its baseline as well.
+7. Record date, source commit/release, Windows/Excel versions, the environment
+   inventory described in [ENVIRONMENT.md](ENVIRONMENT.md), results, discrepancies
+   and reviewer. Keep the record locally; do not mark this checklist passed until
+   it has actually been executed. Stop rollout on an unexplained mismatch.
+
+This acceptance check establishes local technical behavior, not clinical
+validation, patient-data authorization or approval of operational decisions.
