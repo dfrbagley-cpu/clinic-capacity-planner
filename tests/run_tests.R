@@ -36,6 +36,17 @@ check("provider-attributed rows rejected", expect_error(cc_analyse(d3,cfg)))
 d4 <- d; d4$visit_date[1] <- cfg$as_of+1;d4$visit_date[2] <- NA
 r <- cc_analyse(d4,cfg)
 check("future and undated records audited", r$audit$value[r$audit$item=="Rows after analysis end"]=="1" && r$audit$value[r$audit$item=="Rows with unknown dates"]=="1")
+missing_clinic <- d
+missing_clinic$clinic_key[2] <- NA_character_
+r <- cc_analyse(missing_clinic, cfg)
+check("missing clinic key stays in excluded-row audit",
+      r$audit$value[r$audit$item == "Current excluded rows"] == "1")
+check("missing clinic key does not contaminate valid schedule counts",
+      identical(r$schedules$comparison$completed_visits, c(2L,4L,4L)))
+missing_clinic$clinic_key[] <- NA_character_
+r <- cc_analyse(missing_clinic, cfg)
+check("all missing clinic keys produce no schedule scopes",
+      nrow(r$schedules$comparison) == 0L)
 r <- cc_analyse(make_visits(c(9,10,11)*3600),cfg)
 check("absence of activity in extension is unknown demand", grepl("unknown",r$schedules$comparison$interpretation[2]))
 bad <- cfg;bad$schedules$end[1] <- bad$schedules$start[1]
